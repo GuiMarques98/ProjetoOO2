@@ -13,13 +13,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import sun.java2d.pipe.DrawImage;
+
 public class Map extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -512764079348436390L;
 	private final int SPACESHIP_X = 220;
     private final int SPACESHIP_Y = 430;
     private final Timer timer_map;
-    
+
     private final Image background;
     private final Spaceship spaceship;
 
@@ -55,6 +57,10 @@ public class Map extends JPanel implements ActionListener {
                
         // Draw spaceship
         g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(), this);
+        for(Missile mis: spaceship.getMissile()){
+        	g.drawImage(mis.getImage(), mis.getX(), mis.getY(), this);
+        }
+        
     }
     
     @Override
@@ -65,7 +71,8 @@ public class Map extends JPanel implements ActionListener {
         repaint();
     }
     
-    private void dranMissionAccomplished(Graphics g) {
+
+	private void dranMissionAccomplished(Graphics g) {
 
         String message = "MISSION ACCOMPLISHED";
         Font font = new Font("Helvetica", Font.BOLD, 14);
@@ -89,6 +96,7 @@ public class Map extends JPanel implements ActionListener {
     
     private void updateSpaceship() {
         spaceship.move();
+        spaceship.updateMissile();
     }
   
 

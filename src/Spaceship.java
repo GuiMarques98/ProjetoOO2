@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Spaceship extends Sprite {
     
@@ -7,6 +8,8 @@ public class Spaceship extends Sprite {
    
     private int speed_x;
     private int speed_y;
+    
+    private ArrayList<Missile> missile = new ArrayList<Missile>();
 
     public Spaceship(int x, int y) {
         super(x, y);
@@ -46,6 +49,17 @@ public class Spaceship extends Sprite {
         // Moves the spaceship on the verical axis
         y += speed_y;
         
+        
+    }
+    
+    public void updateMissile(){
+    	for(int i=0;i<missile.size();++i){
+    		missile.get(i).update();
+    		if(missile.get(i).getY() > Game.getHeight()){
+    			missile.remove(i);
+    		}
+    			
+    	}
     }
 
     public void keyPressed(KeyEvent e) {
@@ -64,6 +78,7 @@ public class Spaceship extends Sprite {
         
         // Set speed to move to up and set thrust effect
         if (key == KeyEvent.VK_UP) {
+
             speed_y = -1 * MAX_SPEED_Y;
             thrust();
         }
@@ -72,6 +87,12 @@ public class Spaceship extends Sprite {
         if (key == KeyEvent.VK_DOWN) {
             speed_y = MAX_SPEED_Y;
         }
+        
+        if(key == KeyEvent.VK_SPACE){
+        	missile.add(new Missile(this.x, this.y));
+        }
+        
+        
         
     }
     
@@ -87,5 +108,11 @@ public class Spaceship extends Sprite {
             speed_y = 0;
             noThrust();
         }
+        if(key == KeyEvent.VK_SPACE){}
     }
+
+	public ArrayList<Missile> getMissile() {
+		
+		return missile;
+	}
 }

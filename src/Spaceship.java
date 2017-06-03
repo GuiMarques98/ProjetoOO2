@@ -52,15 +52,16 @@ public class Spaceship extends Sprite {
         
     }
     
-    public void updateMissile(){
+    public synchronized void updateMissile(){
     	for(int i=0;i<missile.size();++i){
     		missile.get(i).update();
-    		if(missile.get(i).getY() > Game.getHeight()){
+    		if(missile.get(i).getY() == 0){
     			missile.remove(i);
-    		}
-    			
+    		}		
     	}
     }
+    
+
 
     public void keyPressed(KeyEvent e) {
 
@@ -89,14 +90,18 @@ public class Spaceship extends Sprite {
         }
         
         if(key == KeyEvent.VK_SPACE){
-        	missile.add(new Missile(this.x, this.y));
+        	fire();
         }
         
         
         
     }
     
-    public void keyReleased(KeyEvent e) {
+    private synchronized void fire() {
+   		missile.add(new Missile(this.x, this.y));		
+	}
+
+	public void keyReleased(KeyEvent e) {
 
         int key = e.getKeyCode();
 
@@ -108,11 +113,17 @@ public class Spaceship extends Sprite {
             speed_y = 0;
             noThrust();
         }
-        if(key == KeyEvent.VK_SPACE){}
     }
 
-	public ArrayList<Missile> getMissile() {
+	public synchronized ArrayList<Missile> getMissile() {
 		
 		return missile;
+	}
+
+	public synchronized void removeMissile() {
+		for (int i = 0; i < missile.size(); i++) {
+			if(!missile.get(i).isVisible())
+				missile.remove(i);			
+		}
 	}
 }

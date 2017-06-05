@@ -5,15 +5,17 @@ public class Spaceship extends Sprite {
     
     private static final int MAX_SPEED_X = 2;
     private static final int MAX_SPEED_Y = 1;
+    
    
     private int speed_x;
     private int speed_y;
+    private int score;
     
     private ArrayList<Missile> missile = new ArrayList<Missile>();
 
     public Spaceship(int x, int y) {
         super(x, y);
-        
+        score = 0;
         initSpaceShip();
     }
 
@@ -116,7 +118,6 @@ public class Spaceship extends Sprite {
     }
 
 	public synchronized ArrayList<Missile> getMissile() {
-		
 		return missile;
 	}
 
@@ -125,5 +126,14 @@ public class Spaceship extends Sprite {
 			if(!missile.get(i).isVisible())
 				missile.remove(i);			
 		}
+	}
+
+	public void updateScore(int points) {
+		score+=points;
+		
+	}
+
+	public int getScore() {
+		return score;
 	}
 }

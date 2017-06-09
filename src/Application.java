@@ -1,30 +1,50 @@
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 
-public class Application extends JFrame{
 
-	private static final long serialVersionUID = 1L;
+public class Application{
+
+	
+	private JFrame app;
 
 	public Application() {
-		add(new Map());
+		
+		app = new JFrame();
+		app.add(new Map());
 
-        setSize(Game.getWidth(), Game.getHeight());
+		
+		app.setSize(Game.getWidth(), Game.getHeight());
 
-        setTitle("Space Combat Game");
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+		app.setTitle("Space Combat Game");
+		app.setResizable(false);
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		app.setLocationRelativeTo(null);
+
     }
-    public static void main(String[] args) {
+		
+	
+	public void start() {
+		app.setVisible(true);
+			
+	}
+	
+	public static void main(String[] args) {
         
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 Application app = new Application();
-                app.setVisible(true);
+                app.start();
             }
         });
     }
-	
+
+
 }

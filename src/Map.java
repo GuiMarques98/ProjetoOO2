@@ -124,7 +124,6 @@ public class Map extends JPanel implements ActionListener {
         for(Missile mis: spaceship.getMissile()){
         	g.drawImage(mis.getImage(), mis.getX(), mis.getY(), this);
         }
-        
     }
     
     
@@ -260,7 +259,7 @@ public class Map extends JPanel implements ActionListener {
         FontMetrics metric = getFontMetrics(font);
         
         score.setFont(font);
-        score.setBounds((Game.getWidth() - metric.stringWidth("Score = "+spaceship.getScore()))/2, (Game.getHeight() / 2)+1, 100, 20);
+        score.setBounds((Game.getWidth() - metric.stringWidth("Score = "+spaceship.getScore()))/2, (Game.getHeight() / 2)+1, 400, 20);
         g.setColor(Color.white);
         g.setFont(font);
         g.drawString(message, (Game.getWidth() - metric.stringWidth(message)) / 2, Game.getHeight() / 2);
@@ -277,6 +276,14 @@ public class Map extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             spaceship.keyPressed(e);
+            int key = e.getKeyCode();
+            //Adicionar pause de jogo
+            if(key == KeyEvent.VK_ESCAPE){
+                if(timer_map.isRunning())
+                	timer_map.stop();
+                else
+                	timer_map.start();
+            }
         }
 
         @Override

@@ -10,11 +10,14 @@ public class Spaceship extends Sprite {
     private int speed_x;
     private int speed_y;
     private int score;
+	private Sound shoot;
+
     
     private ArrayList<Missile> missile = new ArrayList<Missile>();
 
     public Spaceship(int x, int y) {
         super(x, y);
+        shoot = new Sound("shoot.wav");
         score = 0;
         initSpaceShip();
     }
@@ -93,6 +96,7 @@ public class Spaceship extends Sprite {
         
         if(key == KeyEvent.VK_SPACE){
         	fire();
+        	shoot.play();
         }
         
         
@@ -114,6 +118,9 @@ public class Spaceship extends Sprite {
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
             speed_y = 0;
             noThrust();
+        }
+        
+        if(key == KeyEvent.VK_SPACE){
         }
     }
 

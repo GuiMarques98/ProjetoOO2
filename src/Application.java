@@ -44,6 +44,8 @@ public class Application{
                 app.start();
             }
         });
+        Thread game = new Thread(new Sound("Space_Invaders.wav"));
+        game.start();
     }
 
 

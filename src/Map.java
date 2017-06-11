@@ -18,18 +18,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import sun.java2d.pipe.DrawImage;
-
 public class Map extends JPanel implements ActionListener {
 	
-	private static final int EASY = 3;
+	private static final int EASY = 2;
 	private static final int MEDIUM = 5;
-	private static final int HARD = 10;
+	private static final int HARD = 15;
 	private static final int DELAY = 20;
 	private int delay=0;
 	
-	private static final int MEDIUM_SCORE = 100;
-	private static final int HARD_SCORE = 500;
+	private static final int MEDIUM_SCORE = 200;
+	private static final int HARD_SCORE = 1000;
 	
 	private static final String EASY_STRING = "images/alien_EASY.png";
 	private static final String MEDIUM_STRING = "images/alien_MEDIUM.png";
@@ -41,11 +39,12 @@ public class Map extends JPanel implements ActionListener {
 	private final int SPACESHIP_X = 220;
     private final int SPACESHIP_Y = 430;
     private final Timer timer_map;
-    private  JLabel score; 
+    private  JLabel score;
 
     private final Image background;
     private final Spaceship spaceship;
     private ArrayList<Alien> alien;
+    private Image explosion;
     private int difficulty;
     private boolean inGame; 
 
@@ -56,6 +55,8 @@ public class Map extends JPanel implements ActionListener {
         setFocusable(true);
         setDoubleBuffered(true);
         ImageIcon image = new ImageIcon("images/space.jpg");
+        ImageIcon ex = new ImageIcon("images/explosion.png");
+        explosion = ex.getImage();
         
         this.background = image.getImage();
         
@@ -64,14 +65,13 @@ public class Map extends JPanel implements ActionListener {
 
         spaceship = new Spaceship(SPACESHIP_X, SPACESHIP_Y);
         alien = new ArrayList<Alien>();
-        score = new JLabel("Score = "+spaceship.getScore());
+        score = new JLabel("Score = "+spaceship.getScore()+"          Aperte 'ESC' para pausar o jogo");
         score.setBounds(0, 0, 50, 10);
-        score.setForeground(Color.white);
+        score.setForeground(Color.blue);
         add(score);
         
-
         timer_map = new Timer(Game.getDelay(), this);
-        timer_map.start();
+        timer_map.stop();
                             
     }
     
@@ -95,25 +95,22 @@ public class Map extends JPanel implements ActionListener {
     }
 
     private void drawObjects(Graphics g) {
-        
+    	
         drawSpaceship(g);
         
         drawAlien(g);
         
-        drawScore(g);
 
-		
-	}
-
-	private void drawScore(Graphics g) {
-		
 		
 	}
 
 	private void drawAlien(Graphics g) {
 		
 		for(Alien alien : alien){
-			g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
+			if(alien.isVisible())
+				g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
+			else
+				g.drawImage(explosion, alien.getX(), alien.getY(), this);
 		}
 	}
 
@@ -128,17 +125,15 @@ public class Map extends JPanel implements ActionListener {
     
     
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {    	
     	
-    	isInGame();
+        updateSpaceship();
+        updateAlien();
     	
     	spaceshipColide();
     	alienColide();
     	
     	updateScore();
-    	
-        updateSpaceship();
-        updateAlien();
         
         updateDifficulty();
 
@@ -148,15 +143,13 @@ public class Map extends JPanel implements ActionListener {
         }
         else
         	++delay;
-  
-        
-        
+
         repaint();
     }
     
 
 	private void updateScore() {
-		score.setText("Score = "+spaceship.getScore());
+		score.setText("Score = "+spaceship.getScore()+"          Aperte 'ESC' para pausar o jogo");
 		
 	}
 
@@ -171,14 +164,7 @@ public class Map extends JPanel implements ActionListener {
 		
 	}
 
-	private void isInGame() {
-		if(!inGame){
-			timer_map.stop();
-		}
-		
-	}
-
-	private synchronized void spaceshipColide() {
+ synchronized void spaceshipColide() {
 		Rectangle spaceShip = spaceship.getBounds();
 		for(int i=0;i<alien.size();++i){
 			Rectangle mob = alien.get(i).getBounds();
@@ -240,17 +226,6 @@ public class Map extends JPanel implements ActionListener {
 		}
 
 	}
-
-	private void dranMissionAccomplished(Graphics g) {
-
-        String message = "MISSION ACCOMPLISHED";
-        Font font = new Font("Helvetica", Font.BOLD, 14);
-        FontMetrics metric = getFontMetrics(font);
-
-        g.setColor(Color.white);
-        g.setFont(font);
-        g.drawString(message, (Game.getWidth() - metric.stringWidth(message)) / 2, Game.getHeight() / 2);
-    }
     
     private void drawGameOver(Graphics g) {
 
@@ -258,6 +233,7 @@ public class Map extends JPanel implements ActionListener {
         Font font = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metric = getFontMetrics(font);
         
+        score.setText("Score = "+spaceship.getScore());
         score.setFont(font);
         score.setBounds((Game.getWidth() - metric.stringWidth("Score = "+spaceship.getScore()))/2, (Game.getHeight() / 2)+1, 400, 20);
         g.setColor(Color.white);
@@ -275,20 +251,25 @@ public class Map extends JPanel implements ActionListener {
         
         @Override
         public void keyPressed(KeyEvent e) {
-            spaceship.keyPressed(e);
-            int key = e.getKeyCode();
-            //Adicionar pause de jogo
-            if(key == KeyEvent.VK_ESCAPE){
-                if(timer_map.isRunning())
-                	timer_map.stop();
-                else
-                	timer_map.start();
-            }
+        	if(inGame){
+                spaceship.keyPressed(e);
+                int key = e.getKeyCode();
+                //Adicionar pause de jogo
+                if(key == KeyEvent.VK_ESCAPE){
+                    if(timer_map.isRunning()){
+                    	timer_map.stop();
+                    }
+                    else{
+                    	timer_map.start();	
+                    }
+                }        		
+        	}
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            spaceship.keyReleased(e);
+        	if(inGame)
+        		spaceship.keyReleased(e);
         }
 
         

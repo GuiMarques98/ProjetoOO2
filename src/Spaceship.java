@@ -61,7 +61,7 @@ public class Spaceship extends Sprite {
     	for(int i=0;i<missile.size();++i){
     		missile.get(i).update();
     		if(missile.get(i).getY() == 0){
-    			missile.remove(i);
+    			missile.get(i).setVisible(false);;
     		}		
     	}
     }
